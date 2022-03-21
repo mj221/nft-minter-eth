@@ -19,7 +19,7 @@ const infuraProjectId = process.env.INFURA_PROJECT_ID;
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  solidity: "0.8.1",
   settings: {
     optimizer: {
         enabled: true,
