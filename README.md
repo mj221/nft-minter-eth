@@ -1,6 +1,6 @@
 # Master NFT Collection
 
-Master NFT Collection is an NFT minting platform that mints NFTs that contain a unique combination of snazzy titles just for fun. Built with Hardhat and EthersJS. 
+Master NFT Collection is an NFT minting platform that mints NFTs that contain a unique combination of snazzy titles just for fun. Built with Hardhat and EthersJS. Minted NFTs are available at OpenSea (may take several minutes to show up initially). 
 
 NFT Master Collection is live at https://mj221.github.io/nft-minter-eth/ on <b>Rinkeby</b> testnet.
 <hr/>
