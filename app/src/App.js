@@ -32,7 +32,8 @@ const App = () => {
     if (accounts.length !== 0){
       const account = accounts[0]
       console.log("Account: ", account)
-
+      setCurrentAccount(account)
+      setupEventListener()
     }else{
       console.log("Account not found")
     }
@@ -47,6 +48,7 @@ const App = () => {
       const accounts = await ethereum.request({method: "eth_requestAccounts"})
       
       setCurrentAccount(accounts[0])
+      setupEventListener()
     }catch(err){
       console.log(err)
     }
@@ -57,41 +59,124 @@ const App = () => {
       Connect to Wallet
     </button>
   )
-
-  const mintNFT = async () =>{
-    const CONTRACT_ADDRESS = "0xA9CA026b4f897B578BF6d610fdF0a657AD39f100"
-
+  const setupEventListener = async () =>{
+    
     try{
-      const {ethereum} = window;
+      const { ethereum } = window
+      let NFTMinter
+      if(ethereum){
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner()
+        NFTMinter = new ethers.Contract(CONTRACT_ADDRESS, NFTminter.abi, signer)
+
+        provider.once("block", () =>{
+          NFTMinter.on("NewNFTMinted", (from, tokenId) => {
+            setLoadingStatus(false)
+            console.log(from, tokenId.toNumber())
+
+            setOpenSeaLink(`https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`)
+            // alert("NFT Minted!")
+          })
+        })
+        
+        ethereum.on('chainChanged', (chainId) => {
+          window.location.reload();
+        });
+      }
+    }catch(err){
+      console.log(err)
+      setLoadingStatus(false)
+    }
+  }
+  const mintNFT = async () =>{
+    setMintStatus(false)
+    setOpenSeaLink("")
+    setLoadingStatus(true)
+    try{
+      const {ethereum} = window
 
       if(ethereum){
         const provider = new ethers.providers.Web3Provider(ethereum)
         const signer = provider.getSigner()
-        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, NFTminter.abi, signer)
+        const NFTMinter = new ethers.Contract(CONTRACT_ADDRESS, NFTminter.abi, signer)
 
-        let nftTxn = await connectedContract.awardNFT()
-        console.log(`Mined at: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`)
+        let nftTxn = await NFTMinter.awardNFT({gasLimit: 3000000})
+        
+
+        console.log("Minting...")
+        await nftTxn.wait()
+
+        console.log(`Minted at: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`)
+        setMintStatus(true)
+      }else{
+        console.log("Ethereum object does not exist.")
       }
     }catch(err){
       console.log(err)
+      setLoadingStatus(false)
+      setMintStatus(false)
+      alert("Could not mint NFT. Please try again.")
     }
   }
 
   useEffect(() =>{
     checkIfWalletIsConnected()
+
+    async function checkChainId(){
+      let chainId = await window.ethereum.request({method: 'eth_chainId'})
+      const rinkebyChainId = "0x4"
+      if (chainId !== rinkebyChainId){
+        alert("NFT Mint contract not deployed on the current network. Please switch to Rinkeby.")
+      }
+    }
+    checkChainId()
+    
   }, [])
+
   return (
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header gradient-text">My NFT Collection</p>
+          <p className="header gradient-text">Master NFT Collection</p>
           <p className="sub-text">
-            Each unique. Each beautiful. Discover your NFT today.
+            Mint NFTs that contain a unique combination of snazzy titles just for you.
           </p>
           {currentAccount === ""
             ? renderNotConnectedContainer()
             : (<button onClick={mintNFT} className="cta-button connect-wallet-button">Mint NFT</button>)
           }
+        </div>
+        <div>
+          {loading?
+          <SolarSystemLoading/>
+          : <div></div>
+          }
+          {openSeaLink && minted
+            ?
+              <div>
+                <button 
+                  className="cta-button opensea-button"
+                  rel="noreferrer"
+                  onClick = {() => {
+                    window.open(openSeaLink, "_blank")
+                  }}
+                >
+                  {openSeaLink}
+                </button>
+                <button 
+                  className="cta-button connect-wallet-button"
+                  rel="noreferrer"
+                  style={{marginLeft: "5px"}}
+                  onClick = {() => {
+                    window.open(openSeaLink, "_blank")
+                  }}
+                >
+                  CLAIM
+              </button>
+              </div>
+            :<div></div>
+          }
+          
         </div>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
