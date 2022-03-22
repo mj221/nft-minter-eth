@@ -1,3 +1,3 @@
 # ETH NFT Minter
 
-Ethereum NFT minter as the name suggests using Hardhat. 
+A simple Ethereum NFT minter that mints a random custom NFT to rinkeby Opensea testnet. Uses Hardhat and EthersJS. 
