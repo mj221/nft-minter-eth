@@ -29,6 +29,12 @@ module.exports = {
   mocha: {
     timeout: 90000
   },
+  paths:{
+    artifacts: "./app/src/build",
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache"
+  },
   networks:{
     // ropsten:{
     //   url: `https://ropsten.infura.io/v3/${infuraProjectId}`,
