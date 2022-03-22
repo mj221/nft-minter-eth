@@ -1,5 +1,7 @@
 import './styles/App.css'
 import twitterLogo from './assets/twitter-logo.svg'
+import {SolarSystemLoading} from 'react-loadingg'
+
 import React, { useEffect, useState } from "react"
 import { ethers } from "ethers"
 import NFTminter from './build/contracts/NFTminter.sol/NFTminter.json'
@@ -7,11 +9,15 @@ import NFTminter from './build/contracts/NFTminter.sol/NFTminter.json'
 // Constants
 const TWITTER_HANDLE = 'mjkid221'
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`
-const OPENSEA_LINK = ''
 const TOTAL_MINT_COUNT = 50
+const CONTRACT_ADDRESS = "0xb76fa3D109aF35c64990C19d9881a1A3e036DB69" // rinkeby
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("")
+  const [loading, setLoadingStatus] = useState(false)
+  const [openSeaLink, setOpenSeaLink] = useState("")
+  const [minted, setMintStatus] = useState(false)
+
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window
 
