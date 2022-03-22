@@ -1,3 +1,5 @@
-# ETH NFT Minter
+# Master NFT Collection
 
-A simple Ethereum NFT minter that mints a random custom NFT to rinkeby Opensea testnet. Uses Hardhat and EthersJS. 
+An Ethereum NFT minter that mints an NFT that contain a unique combination of snazzy titles just for you. Connect to Rinkeby testnet to mint. Built with Hardhat and EthersJS. 
+
+
