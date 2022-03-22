@@ -14,11 +14,16 @@ contract NFTminter is ERC721URIStorage{
     Counters.Counter private _tokenIds;
 
     // basic svg starter code
-    string baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
+    string svgPartOne = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='";
+    string svgPartTwo = "'/><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
 
     string[] firstWords = ["Fantastic", "Awesome", "Great", "Amazing", "Cool", "Good"];
     string[] secondWords = ["Horrifying", "Terrifying", "Cruel", "Crude", "Bad", "Evil"];
     string[] thirdWords = ["Web3Developer", "CryptoTrader", "NFTCollector", "EarlyInvestor", "Hodler", "DeFiDegen"];
+
+    string[] colors = ["red", "#08C2A8", "black", "yellow", "blue", "green", "orange", "purple"];
+
+    event NewNFTMinted(address sender, uint256 tokenId);
 
     constructor() ERC721 ("MasterNFT", "MNFT"){
         console.log("NFT contract deployed");
@@ -46,6 +51,12 @@ contract NFTminter is ERC721URIStorage{
         return thirdWords[rand];
     }
 
+    function pickRandomColor(uint256 tokenId) public view returns (string memory) {
+        uint256 rand = random(string(abi.encodePacked("COLOR", Strings.toString(tokenId))));
+        rand = rand % colors.length;
+        return colors[rand];
+    }
+
     function awardNFT() public{
         uint256 newItemId = _tokenIds.current();
 
@@ -54,7 +65,8 @@ contract NFTminter is ERC721URIStorage{
         string memory third = pickRandomThirdWord(newItemId);
         string memory combinedWord = string(abi.encodePacked(first, second, third));
 
-        string memory finalSvg = string(abi.encodePacked(baseSvg, combinedWord, "</text></svg>"));
+        string memory randomColor = pickRandomColor(newItemId);
+        string memory finalSvg = string(abi.encodePacked(svgPartOne, randomColor, svgPartTwo, combinedWord, "</text></svg>"));
 
         string memory json = Base64.encode(
             bytes(
@@ -85,6 +97,7 @@ contract NFTminter is ERC721URIStorage{
         _tokenIds.increment();
         console.log("An NFT w/ID %s has been minted to %s", newItemId, msg.sender);
         
+        emit NewNFTMinted(msg.sender, newItemId);
     }
 
 }
