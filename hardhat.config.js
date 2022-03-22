@@ -27,7 +27,7 @@ module.exports = {
     },
   },
   mocha: {
-    timeout: 90000
+    // timeout: 90000
   },
   paths:{
     artifacts: "./app/src/build",
@@ -35,11 +35,17 @@ module.exports = {
     tests: "./test",
     cache: "./cache"
   },
+  defaultNetwork: "hardhat",
   networks:{
     // ropsten:{
     //   url: `https://ropsten.infura.io/v3/${infuraProjectId}`,
     //   accounts: privateKeyArray,
     // }
+    hardhat:{
+      chainId: 1337,
+      gas: 2100000,
+      gasPrice: 8000000000
+    },
     rinkeby:{
       url: `https://rinkeby.infura.io/v3/${infuraProjectId}`,
       accounts: privateKeyArray,
