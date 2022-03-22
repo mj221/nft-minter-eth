@@ -9,13 +9,13 @@ const main = async() => {
 
   console.log("Contract deployed to:", nftMinter.address);
 
-  let txn = await nftMinter.awardNFT()
-  await txn.wait()
-  console.log("MINTED NFT #1")
+  // let txn = await nftMinter.awardNFT()
+  // await txn.wait()
+  // console.log("MINTED NFT #1")
 
-  txn = await nftMinter.awardNFT()
-  await txn.wait()
-  console.log("MINTED NFT #2")
+  // txn = await nftMinter.awardNFT()
+  // await txn.wait()
+  // console.log("MINTED NFT #2")
 }
 
 const runMain = async()=>{
